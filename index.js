@@ -16,14 +16,12 @@ const Genres = Models.Genres;
 const Director = Models.Director;
 
 
-let Movie = mongoose.model('Movie', movieSchema);
-let User = mongoose.model('User', userSchema);
-
-
 // mongose.connect(process.env.Connection_URI, {
-  // useNewUrlParser: true,
-  // useUnifiedTopology: true;
-  // });
+  // useNewUrlParser: true, useUnifiedTopology: true })
+  // .then( console.log('DB Connected') );
+
+
+  // This allows mongoose connect to the database so it can perform CRUD operations .
 mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 
 //log requests to server
@@ -36,7 +34,7 @@ app.get("/", (reg, res) => {
   res.send("Welcome ro MyFlix!")
 });
 
-//return JSON object when at /movies
+//Get a full list of movies (return JSON object when at /movies)
 app.get("/movies", (req, res) => {
   Movies.find()
   .then((movies) => {
@@ -48,19 +46,8 @@ app.get("/movies", (req, res) => {
   });
 });
 
-app.get("/users", function (req, res) {
-  Users.find()
-    .then(function (users) {
-      res.status(201).json(users);
-    })
-    .catch(function (err) {
-      console.error(err) ;
-      res.status(500).send("Error: " + err);
-    });
-});
 
-
-// GET JSON movie info when looking for specific title
+// Get information about a single movie by title  (GET JSON movie info when looking for specific title)
 app.get("/movies/:Title", (req, res) => {
   Movies.findOne({ Title: req.params.Title })
      .then((movie) => {
@@ -72,7 +59,7 @@ app.get("/movies/:Title", (req, res) => {
      });
 });
 
-//GET JSON genre info when looking for specific genre
+//Get information about a specific genre of film (GET JSON genre info when looking for specific genre)
 app.get("/genre/:Name", (req, res) => {
   Genres.findOne({ Name: req.params.Name })
      .then((genre) => {
@@ -135,6 +122,17 @@ app.get('/users', (req, res) => {
     });
 });
 
+app.get("/users", function (req, res) {
+  Users.find()
+    .then(function (users) {
+      res.status(201).json(users);
+    })
+    .catch(function (err) {
+      console.error(err) ;
+      res.status(500).send("Error: " + err);
+    });
+});
+
 
 // Get a user by username
 app.get('/users/:Username', (req, res) => {
@@ -149,26 +147,29 @@ app.get('/users/:Username', (req, res) => {
 });
 
 
-//allow users to update their user info, by username
-app.put("/users/:Username", (req, res) => {
-  Users.findOneAndUpdate({ Username: req.params.Username }, {
-        $set: {
-          Username: req.body.Username,
-          Password: req.body.Password,
-          Email: req.body.Email,
-          Birthday: req.body.Birthday,
-        },
-      }, 
-      { new: true }, // This line makes sure that the updated document is running
-      (err, updatedUser) => {
-        if (err) {
-          console.error(err);
-          res.status(500).send("Error: " + err);
-        } else {
-          res.json(updatedUser);
-        }
-      });
-   });
+//allow users to update their user info, by username//
+app.patch('/users/:Username', async (req, res) => {
+  try {
+    const updatedUser = await Users.findOneAndUpdate({ Username: "Django Apash" }, {
+      $set: {
+        Username: req.body.Username,
+        Password: req.body.Password,
+        Email: req.body.Email,
+        Birthday: req.body.Birthday,
+      },
+    },
+    { new: true }); // This line makes sure that the updated document is returned
+
+    if (updatedUser) {
+      res.json(updatedUser);
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error: " + err);
+  }
+});
 
 // Delete a user by username
 app.delete('/users/:Username', (req, res) => {
