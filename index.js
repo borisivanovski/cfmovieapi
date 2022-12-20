@@ -62,26 +62,26 @@ app.get("/movies/:Title", (req, res) => {
 
 //Get information about a specific genre of film (GET JSON genre info when looking for specific genre)
 app.get("/movies/genres/:Name", (req, res) => {
-  Genres.findOne({ "Genre.Name": req.params.Name })
+  Movies.findOne({ "Genre.Name": req.params.Name })
      .then((movies) => {
       res.json(movies.Genre);
      })
      .catch((err) => {
        console.error(err);
-       res.status(500).send("Error: " + err);
+       res.status(500).send("No such genre.Error: " + err);
      });
 });
 
 
 //get info on director when looking for specific director
-app.get('/movies/directors/:Name', (req, res) => {
-  Directors.findOne({ "Director.name": req.params.Name })
+app.get("/movies/directors/:Name", (req, res) => {
+  Movies.findOne({ "Director.name": req.params.Name })
      .then((movies) => {
       res.json(movies.Director);
      })
      .catch((err) => {
        console.error(err);
-       res.status(500).send("Error: " + err);
+       res.status(500).send("No such director.Error: " + err);
      });
 });
 
