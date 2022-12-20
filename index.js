@@ -26,6 +26,7 @@ mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, 
 
 //log requests to server
 app.use(morgan("common"));
+app.use(bodyParser.json());
 
 //import auth into index
 
@@ -60,7 +61,7 @@ app.get("/movies/:Title", (req, res) => {
 });
 
 //Get information about a specific genre of film (GET JSON genre info when looking for specific genre)
-app.get("/genre/:Name", (req, res) => {
+app.get('/genre/:Name', (req, res) => {
   Genres.findOne({ Name: req.params.Name })
      .then((genre) => {
       res.json(genre.Description);
@@ -71,8 +72,9 @@ app.get("/genre/:Name", (req, res) => {
      });
 });
 
+
 //get info on director when looking for specific director
-app.get("/director/:Name", (req, res) => {
+app.get('/director/:Name', (req, res) => {
   Directors.findOne({ Name: req.params.Name })
      .then((director) => {
       res.json(director);
@@ -148,9 +150,9 @@ app.get('/users/:Username', (req, res) => {
 
 
 //allow users to update their user info, by username//
-app.patch('/users/:Username', async (req, res) => {
+app.put('/users/:Username', async (req, res) => {
   try {
-    const updatedUser = await Users.findOneAndUpdate({ Username: "Django Apash" }, {
+    const updatedUser = await Users.findOneAndUpdate({ Username: req.params.Username }, {
       $set: {
         Username: req.body.Username,
         Password: req.body.Password,
