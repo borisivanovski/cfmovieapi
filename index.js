@@ -16,6 +16,27 @@ const Genres = Models.Genres;
 const Director = Models.Director;
 
 
+app.use(bodyParser.urlencoded({ extended: true }));
+let auth = require('./auth')(app);
+
+
+const passport = require('passport');
+require('./passport');
+
+
+app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+  Movies.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
+});
+
+
+
 // mongose.connect(process.env.Connection_URI, {
   // useNewUrlParser: true, useUnifiedTopology: true })
   // .then( console.log('DB Connected') );
