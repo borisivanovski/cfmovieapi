@@ -72,7 +72,7 @@ app.use(bodyParser.json());
 
 //default text response when at /
 app.get("/", (reg, res) => {
-  res.send("Welcome ro MyFlix!");
+  res.send("Welcome to MyFlix!");
 });
 
 //Get a full list of movies (return JSON object when at /movies)
