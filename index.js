@@ -59,7 +59,7 @@ userSchema.methods.validatePassword = function (password) {
 };
 
 // This allows mongoose connect to the database so it can perform CRUD operations .
-mongoose.connect("mongodb://localhost:27017/myFlixDB", {
+mongoose.connect("mongodb://localhost:27017/cfmovieapi", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
